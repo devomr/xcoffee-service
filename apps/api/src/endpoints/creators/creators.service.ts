@@ -10,15 +10,43 @@ export class CreatorsService {
     private readonly creatorModel: Model<CreatorDocument>,
   ) {}
 
+  /**
+   * Add new creator in the database
+   * @param creator Added Creator data
+   * @returns
+   */
   async create(creator: Creator): Promise<Creator> {
     const createdCreator = await this.creatorModel.create(creator);
     return createdCreator;
   }
 
+  /**
+   * Update existing creator in the database
+   * @param creator
+   * @returns Updated Creator data
+   */
+  async update(creator: Creator): Promise<Creator> {
+    const updatedCreator = await this.creatorModel.findOneAndUpdate(
+      { address: creator.address },
+      creator,
+      { new: true },
+    );
+    return updatedCreator;
+  }
+
+  /**
+   * Find a creator by his wallet address
+   * @param address Wallet address
+   * @returns Creator data
+   */
   async findCreatorByAddress(address: string): Promise<Creator> {
     return await this.creatorModel.findOne({ address: address }).exec();
   }
 
+  /**
+   * Find the top 10 creators that have the most supporters
+   * @returns List of creators
+   */
   async findTopSupportedCreators(): Promise<Creator[]> {
     return await this.creatorModel
       .find()
@@ -27,6 +55,10 @@ export class CreatorsService {
       .exec();
   }
 
+  /**
+   * Find all available creators
+   * @returns List of creators
+   */
   async findAll(): Promise<Creator[]> {
     return await this.creatorModel.find().exec();
   }

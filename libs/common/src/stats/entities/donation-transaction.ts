@@ -12,4 +12,7 @@ export class DonationTransaction {
 
   @ApiProperty()
   txHash: string;
+
+  @ApiProperty()
+  senderAddress: string;
 }

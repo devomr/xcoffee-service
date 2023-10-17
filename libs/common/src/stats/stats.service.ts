@@ -68,10 +68,10 @@ export class StatsService {
       const transactionArgs = ConvertUtil.base64ToString(transaction.data);
       const args = transactionArgs.split('@');
 
-      console.log(transactionArgs);
-      // const senderAddress = transaction.sender;
+      console.log(transaction);
+      const senderAddress = transaction.sender;
       // const creatorAddress = transactionArgs[0];
-      const txHash = transaction.hash;
+      const txHash = transaction.txHash;
       const amount = transaction.value;
       const name = 2 < args.length ? ConvertUtil.hexToString(args[2]) : '';
       const message = 3 < args.length ? ConvertUtil.hexToString(args[3]) : '';
@@ -81,8 +81,10 @@ export class StatsService {
         message: message,
         txHash: txHash,
         amount: amount,
+        senderAddress: senderAddress,
       };
       donationTransactions.push(donationTransaction);
+      console.log(donationTransaction);
     }
 
     return donationTransactions;

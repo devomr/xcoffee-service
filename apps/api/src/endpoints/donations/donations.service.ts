@@ -10,26 +10,11 @@ export class DonationsService {
     private readonly donationModel: Model<DonationDocument>,
   ) {}
 
-  async create(
-    name: string,
-    message: string,
-    amount: string,
-    txHash: string,
-    senderAddress: string,
-    creatorAddress: string,
-  ): Promise<Donation> {
-    const createdDonation = await new this.donationModel({
-      name: name,
-      message: message,
-      amount: amount,
-      txHash: txHash,
-      senderAddress: senderAddress,
-      creatorAddress: creatorAddress,
-      createdAt: new Date(),
-    }).save();
-    return createdDonation;
-  }
-
+  /**
+   * Find all donations for a creator
+   * @param address Wallet address
+   * @returns List of donations
+   */
   async findDonationsForCreator(address: string): Promise<Donation[]> {
     return await this.donationModel.find({ creatorAddress: address }).exec();
   }

@@ -20,6 +20,9 @@ export class Creator {
   @Prop({ default: 0 })
   supporters: number;
 
+  @Prop({ default: false })
+  active: boolean;
+
   @Prop({ default: () => new Date() })
   createdAt: Date;
 }

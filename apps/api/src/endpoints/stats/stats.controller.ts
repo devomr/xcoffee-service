@@ -7,6 +7,11 @@ import { ApiTags } from '@nestjs/swagger';
 export class StatsController {
   constructor(private readonly statsService: StatsService) {}
 
+  /**
+   * Find donation transactions for an address
+   * @param address Wallet address
+   * @returns List of donation transactions
+   */
   @Get('/donations/:address')
   async getDonationsHistory(
     @Param('address') address: string,
@@ -14,6 +19,11 @@ export class StatsController {
     return await this.statsService.getDonationsHistory(address);
   }
 
+  /**
+   * Find the number of supporters for an address
+   * @param address Wallet address
+   * @returns Number of supporters
+   */
   @Get('/supporters/:address')
   async getCountOfSupporters(
     @Param('address') address: string,
