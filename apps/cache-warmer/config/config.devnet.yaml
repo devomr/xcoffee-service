@@ -8,4 +8,5 @@ features:
   privateApi:
     enabled: false
     port: 4000
-
+contracts:
+  xCoffee: 'erd1qqqqqqqqqqqqqpgq2kyfdk57vf8z4uht3c25wuz8gu7n0mck7j4q58f7s7'

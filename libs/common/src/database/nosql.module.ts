@@ -1,6 +1,6 @@
-import { Module } from "@nestjs/common";
-import { MongooseModule } from "@nestjs/mongoose";
-import { ApiConfigModule, ApiConfigService } from "../config";
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ApiConfigModule, ApiConfigService } from '../config';
 
 @Module({
   imports: [
@@ -12,7 +12,6 @@ import { ApiConfigModule, ApiConfigService } from "../config";
       inject: [ApiConfigService],
     }),
   ],
-  exports: [
-  ],
+  exports: [],
 })
-export class NoSQLDatabaseModule { }
+export class NoSQLDatabaseModule {}

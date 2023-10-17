@@ -7,3 +7,4 @@ export * from './config';
 export * from './utils';
 export * from './example';
 export * from './health-check';
+export * from './stats';

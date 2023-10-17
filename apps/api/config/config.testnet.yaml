@@ -1,3 +1,4 @@
+chainId: 'D'
 urls:
   api: 'https://testnet-api.multiversx.com'
   swagger:
@@ -31,3 +32,5 @@ keepAliveTimeout:
   downstream: 61000
   upstream: 60000
 useCachingInterceptor: false
+contracts:
+  xCoffee: 'erd1qqqqqqqqqqqqqpgq2kyfdk57vf8z4uht3c25wuz8gu7n0mck7j4q58f7s7'

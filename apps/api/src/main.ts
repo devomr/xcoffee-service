@@ -4,7 +4,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { readFileSync } from 'fs';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { join } from 'path';
-import { ApiConfigService, SdkNestjsConfigServiceImpl } from '@mvx-monorepo/common';
+import {
+  ApiConfigService,
+  SdkNestjsConfigServiceImpl,
+} from '@mvx-monorepo/common';
 import { PrivateAppModule } from './private.app.module';
 import { PublicAppModule } from './public.app.module';
 import * as bodyParser from 'body-parser';
@@ -13,7 +16,10 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { SocketAdapter } from './websockets/socket.adapter';
 import cookieParser from 'cookie-parser';
 import { PubSubListenerModule } from '@mvx-monorepo/common';
-import { LoggingInterceptor, MetricsService } from '@multiversx/sdk-nestjs-monitoring';
+import {
+  LoggingInterceptor,
+  MetricsService,
+} from '@multiversx/sdk-nestjs-monitoring';
 import { NativeAuthGuard } from '@multiversx/sdk-nestjs-auth';
 import { LoggerInitializer } from '@multiversx/sdk-nestjs-common';
 import { CacheService, CachingInterceptor } from '@multiversx/sdk-nestjs-cache';
@@ -34,10 +40,16 @@ async function bootstrap() {
   const apiConfigService = publicApp.get<ApiConfigService>(ApiConfigService);
   const cachingService = publicApp.get<CacheService>(CacheService);
   const metricsService = publicApp.get<MetricsService>(MetricsService);
-  const httpAdapterHostService = publicApp.get<HttpAdapterHost>(HttpAdapterHost);
+  const httpAdapterHostService =
+    publicApp.get<HttpAdapterHost>(HttpAdapterHost);
 
   if (apiConfigService.getIsAuthActive()) {
-    publicApp.useGlobalGuards(new NativeAuthGuard(new SdkNestjsConfigServiceImpl(apiConfigService), cachingService));
+    publicApp.useGlobalGuards(
+      new NativeAuthGuard(
+        new SdkNestjsConfigServiceImpl(apiConfigService),
+        cachingService,
+      ),
+    );
   }
 
   const httpServer = httpAdapterHostService.httpAdapter.getHttpServer();
@@ -59,13 +71,17 @@ async function bootstrap() {
 
   publicApp.useGlobalInterceptors(...globalInterceptors);
 
-  const description = readFileSync(join(__dirname, '..', 'docs', 'swagger.md'), 'utf8');
+  const description = readFileSync(
+    join(__dirname, '..', 'docs', 'swagger.md'),
+    'utf8',
+  );
 
   let documentBuilder = new DocumentBuilder()
     .setTitle('MultiversX Microservice API')
     .setDescription(description)
     .setVersion('1.0.0')
-    .setExternalDoc('MultiversX Docs', 'https://docs.multiversx.com');
+    .setExternalDoc('MultiversX Docs', 'https://docs.multiversx.com')
+    .addBearerAuth();
 
   const apiUrls = apiConfigService.getSwaggerUrls();
   for (const apiUrl of apiUrls) {
@@ -108,8 +124,12 @@ async function bootstrap() {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   pubSubApp.listen();
 
-  logger.log(`Public API active: ${apiConfigService.getIsPublicApiFeatureActive()}`);
-  logger.log(`Private API active: ${apiConfigService.getIsPrivateApiFeatureActive()}`);
+  logger.log(
+    `Public API active: ${apiConfigService.getIsPublicApiFeatureActive()}`,
+  );
+  logger.log(
+    `Private API active: ${apiConfigService.getIsPrivateApiFeatureActive()}`,
+  );
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises

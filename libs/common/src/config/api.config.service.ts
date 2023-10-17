@@ -1,9 +1,9 @@
-import { Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ApiConfigService {
-  constructor(private readonly configService: ConfigService) { }
+  constructor(private readonly configService: ConfigService) {}
 
   getApiUrl(): string {
     const apiUrl = this.configService.get<string>('urls.api');
@@ -67,9 +67,9 @@ export class ApiConfigService {
     return databasePort;
   }
 
-
   getDatabaseUsername(): string {
-    const databaseUsername = this.configService.get<string>('database.username');
+    const databaseUsername =
+      this.configService.get<string>('database.username');
     if (!databaseUsername) {
       throw new Error('No database.username present');
     }
@@ -78,7 +78,8 @@ export class ApiConfigService {
   }
 
   getDatabasePassword(): string {
-    const databasePassword = this.configService.get<string>('database.password');
+    const databasePassword =
+      this.configService.get<string>('database.password');
     if (!databasePassword) {
       throw new Error('No database.password present');
     }
@@ -95,7 +96,13 @@ export class ApiConfigService {
     return databaseName;
   }
 
-  getDatabaseConnection(): { host: string, port: number, username: string, password: string, database: string } {
+  getDatabaseConnection(): {
+    host: string;
+    port: number;
+    username: string;
+    password: string;
+    database: string;
+  } {
     return {
       host: this.getDatabaseHost(),
       port: this.getDatabasePort(),
@@ -105,13 +112,14 @@ export class ApiConfigService {
     };
   }
 
-
   getNoSQLDatabaseConnection(): string {
     return `mongodb://${this.getDatabaseHost()}:27017/${this.getDatabaseName()}`;
   }
 
   getIsPublicApiFeatureActive(): boolean {
-    const isApiActive = this.configService.get<boolean>('features.publicApi.enabled');
+    const isApiActive = this.configService.get<boolean>(
+      'features.publicApi.enabled',
+    );
     if (isApiActive === undefined) {
       throw new Error('No public api feature flag present');
     }
@@ -120,7 +128,9 @@ export class ApiConfigService {
   }
 
   getPublicApiFeaturePort(): number {
-    const featurePort = this.configService.get<number>('features.publicApi.port');
+    const featurePort = this.configService.get<number>(
+      'features.publicApi.port',
+    );
     if (featurePort === undefined) {
       throw new Error('No public api port present');
     }
@@ -129,7 +139,9 @@ export class ApiConfigService {
   }
 
   getIsPrivateApiFeatureActive(): boolean {
-    const isApiActive = this.configService.get<boolean>('features.privateApi.enabled');
+    const isApiActive = this.configService.get<boolean>(
+      'features.privateApi.enabled',
+    );
     if (isApiActive === undefined) {
       throw new Error('No private api feature flag present');
     }
@@ -138,7 +150,9 @@ export class ApiConfigService {
   }
 
   getPrivateApiFeaturePort(): number {
-    const featurePort = this.configService.get<number>('features.privateApi.port');
+    const featurePort = this.configService.get<number>(
+      'features.privateApi.port',
+    );
     if (featurePort === undefined) {
       throw new Error('No private api port present');
     }
@@ -147,7 +161,9 @@ export class ApiConfigService {
   }
 
   getIsCacheWarmerFeatureActive(): boolean {
-    const isCacheWarmerActive = this.configService.get<boolean>('features.cacheWarmer.enabled');
+    const isCacheWarmerActive = this.configService.get<boolean>(
+      'features.cacheWarmer.enabled',
+    );
     if (isCacheWarmerActive === undefined) {
       throw new Error('No cache warmer feature flag present');
     }
@@ -156,7 +172,9 @@ export class ApiConfigService {
   }
 
   getCacheWarmerFeaturePort(): number {
-    const featurePort = this.configService.get<number>('features.cacheWarmer.port');
+    const featurePort = this.configService.get<number>(
+      'features.cacheWarmer.port',
+    );
     if (featurePort === undefined) {
       throw new Error('No cache warmer port present');
     }
@@ -165,7 +183,9 @@ export class ApiConfigService {
   }
 
   getIsTransactionProcessorFeatureActive(): boolean {
-    const isTransactionProcessorActive = this.configService.get<boolean>('features.transactionProcessor.enabled');
+    const isTransactionProcessorActive = this.configService.get<boolean>(
+      'features.transactionProcessor.enabled',
+    );
     if (isTransactionProcessorActive === undefined) {
       throw new Error('No transaction processor feature flag present');
     }
@@ -174,7 +194,9 @@ export class ApiConfigService {
   }
 
   getTransactionProcessorFeaturePort(): number {
-    const featurePort = this.configService.get<number>('features.transactionProcessor.port');
+    const featurePort = this.configService.get<number>(
+      'features.transactionProcessor.port',
+    );
     if (featurePort === undefined) {
       throw new Error('No transaction processor port present');
     }
@@ -183,7 +205,9 @@ export class ApiConfigService {
   }
 
   getTransactionProcessorMaxLookBehind(): number {
-    const maxLookBehind = this.configService.get<number>('features.transactionProcessor.maxLookBehind');
+    const maxLookBehind = this.configService.get<number>(
+      'features.transactionProcessor.maxLookBehind',
+    );
     if (maxLookBehind === undefined) {
       throw new Error('No transaction processor max look behind present');
     }
@@ -192,7 +216,9 @@ export class ApiConfigService {
   }
 
   getIsQueueWorkerFeatureActive(): boolean {
-    const isQueueWorkerActive = this.configService.get<boolean>('features.queueWorker.enabled');
+    const isQueueWorkerActive = this.configService.get<boolean>(
+      'features.queueWorker.enabled',
+    );
     if (isQueueWorkerActive === undefined) {
       throw new Error('No queue worker feature flag present');
     }
@@ -201,7 +227,9 @@ export class ApiConfigService {
   }
 
   getQueueWorkerFeaturePort(): number {
-    const featurePort = this.configService.get<number>('features.queueWorker.port');
+    const featurePort = this.configService.get<number>(
+      'features.queueWorker.port',
+    );
     if (featurePort === undefined) {
       throw new Error('No transaction processor port present');
     }
@@ -223,7 +251,9 @@ export class ApiConfigService {
   }
 
   getAxiosTimeout(): number {
-    return this.configService.get<number>('keepAliveTimeout.downstream') ?? 61000;
+    return (
+      this.configService.get<number>('keepAliveTimeout.downstream') ?? 61000
+    );
   }
 
   getIsKeepAliveAgentFeatureActive(): boolean {
@@ -268,10 +298,30 @@ export class ApiConfigService {
   }
 
   getNativeAuthMaxExpirySeconds(): number {
-    return this.configService.get<number>('nativeAuth.maxExpirySeconds') ?? 86400;
+    return (
+      this.configService.get<number>('nativeAuth.maxExpirySeconds') ?? 86400
+    );
   }
 
   getNativeAuthAcceptedOrigins(): string[] {
     return this.configService.get<string[]>('nativeAuth.acceptedOrigins') ?? [];
+  }
+
+  getXcoffeeContract(): string {
+    const contract = this.configService.get<string>('contracts.xCoffee');
+    if (!contract) {
+      throw new Error('No xCoffee contract present');
+    }
+
+    return contract;
+  }
+
+  getChainId(): string {
+    const chainId = this.configService.get<string>('chainId');
+    if (!chainId) {
+      throw new Error('No chainId present');
+    }
+
+    return chainId;
   }
 }
