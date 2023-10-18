@@ -27,6 +27,14 @@
           {
             "include": "../docs/swagger.md",
             "outDir": "./dist/apps/api/docs"
+          },
+          {
+            "include": "../secrets/localhost-key.pem",
+            "outDir": "./dist/apps/api/secrets"
+          },
+          {
+            "include": "../secrets/localhost.pem",
+            "outDir": "./dist/apps/api/secrets"
           }
         ]
       }

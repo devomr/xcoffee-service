@@ -1,3 +1,4 @@
+import { Address } from '@multiversx/sdk-core/out';
 import { Constants } from '@multiversx/sdk-nestjs-common';
 
 export class CacheInfo {
@@ -15,6 +16,13 @@ export class CacheInfo {
     key: 'examples',
     ttl: Constants.oneHour(),
   };
+
+  static SubscriptionDeadline(address: Address): CacheInfo {
+    return {
+      key: `subscription:${address.toString()}`,
+      ttl: Constants.oneMinute() * 10,
+    };
+  }
 
   static CreatorSupporters: CacheInfo = {
     key: 'creator:supporters',

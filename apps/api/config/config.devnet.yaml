@@ -2,7 +2,7 @@ chainId: 'D'
 urls:
   api: 'https://devnet-api.multiversx.com'
   swagger:
-    - 'http://localhost:3000'
+    - 'https://localhost:3000'
     - 'https://devnet-microservice.multiversx.com'
   redis: '127.0.0.1'
 database:
@@ -21,7 +21,7 @@ features:
 nativeAuth:
   maxExpirySeconds:
   acceptedOrigins:
-    - http://localhost:3000
+    - https://localhost:3000
     - https://localhost:3001
     - https://localhost:3002
     - https://utils.multiversx.com
@@ -33,4 +33,4 @@ keepAliveTimeout:
   upstream: 60000
 useCachingInterceptor: false
 contracts:
-  xCoffee: 'erd1qqqqqqqqqqqqqpgq2kyfdk57vf8z4uht3c25wuz8gu7n0mck7j4q58f7s7'
+  xCoffee: 'erd1qqqqqqqqqqqqqpgqvhk2wnx5tgzvlalzdt7yus5ygue084hx7j4qka2gz6'

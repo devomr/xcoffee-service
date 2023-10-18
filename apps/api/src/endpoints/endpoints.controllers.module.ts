@@ -8,6 +8,7 @@ import { UsersController } from './users/user.controller';
 import { CreatorsController } from './creators/creators.controller';
 import { DonationsController } from './donations/donations.controller';
 import { StatsController } from './stats/stats.controller';
+import { XcoffeeController } from './xcoffee.abi/xcoffee.controller';
 
 @Module({
   imports: [EndpointsServicesModule],
@@ -21,6 +22,7 @@ import { StatsController } from './stats/stats.controller';
     DonationsController,
     TokensController,
     StatsController,
+    XcoffeeController,
   ],
 })
 export class EndpointsControllersModule {}

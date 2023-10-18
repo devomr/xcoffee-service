@@ -1,9 +1,10 @@
 import { CacheService } from '@multiversx/sdk-nestjs-cache';
 import { Locker } from '@multiversx/sdk-nestjs-common';
 import { TransactionProcessor } from '@multiversx/sdk-transaction-processor';
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { ApiConfigService, CacheInfo } from '@mvx-monorepo/common';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class TransactionProcessorService {
@@ -14,6 +15,7 @@ export class TransactionProcessorService {
   constructor(
     private readonly apiConfigService: ApiConfigService,
     private readonly cacheService: CacheService,
+    @Inject('PUBSUB_SERVICE') private clientProxy: ClientProxy,
   ) {
     this.logger = new Logger(TransactionProcessorService.name);
   }
@@ -46,7 +48,7 @@ export class TransactionProcessorService {
                 `Received ${transactions.length} transactions on shard ${shardId} and nonce ${nonce}. Time left: ${statistics.secondsLeft}`,
               );
 
-              if ('donate' === functionName) {
+              if (functionName && 'donate' === functionName) {
                 const transactionArgs = transaction.getDataArgs();
                 const senderAddress = transaction.sender;
                 const creatorAddress = transactionArgs[0];
@@ -62,6 +64,11 @@ export class TransactionProcessorService {
                 this.logger.log('Amount: ' + amount);
                 this.logger.log('Name: ' + name);
                 this.logger.log('Message: ' + message);
+              }
+
+              if (functionName && 'subscribe' === functionName) {
+                this.logger.log('Subscribe transaction detected');
+                await this.deleteCacheKey(`subscribe:${transaction.sender}`);
               }
             }
           }
@@ -80,5 +87,9 @@ export class TransactionProcessorService {
         },
       });
     });
+  }
+
+  private deleteCacheKey(key: string) {
+    this.clientProxy.emit('deleteCacheKeys', [key]);
   }
 }

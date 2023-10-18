@@ -3,7 +3,7 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { readFileSync } from 'fs';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { join } from 'path';
+import path, { join } from 'path';
 import {
   ApiConfigService,
   SdkNestjsConfigServiceImpl,
@@ -29,9 +29,17 @@ import '@multiversx/sdk-nestjs-common/lib/utils/extensions/date.extensions';
 import '@multiversx/sdk-nestjs-common/lib/utils/extensions/number.extensions';
 import '@multiversx/sdk-nestjs-common/lib/utils/extensions/string.extensions';
 import configuration from '../config/configuration';
+import * as fs from 'fs';
 
 async function bootstrap() {
-  const publicApp = await NestFactory.create(PublicAppModule);
+  const httpsOptions = {
+    key: fs.readFileSync(
+      path.resolve(__dirname, '../secrets/localhost-key.pem'),
+    ),
+    cert: fs.readFileSync(path.resolve(__dirname, '../secrets/localhost.pem')),
+  };
+
+  const publicApp = await NestFactory.create(PublicAppModule, { httpsOptions });
   publicApp.use(bodyParser.json({ limit: '1mb' }));
   publicApp.enableCors();
   publicApp.useLogger(publicApp.get(WINSTON_MODULE_NEST_PROVIDER));

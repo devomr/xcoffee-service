@@ -17,8 +17,13 @@ export class StatsService {
     return await this.cacheService.getOrSet(
       `${CacheInfo.CreatorSupporters.key}:${address}`,
       async () => {
+        const distinctSenders = new Set();
         const history = await this.getDonationsHistory(address);
-        return history.length;
+
+        history.forEach((item) => {
+          distinctSenders.add(item.senderAddress);
+        });
+        return distinctSenders.size;
       },
       CacheInfo.CreatorSupporters.ttl,
     );
@@ -40,22 +45,17 @@ export class StatsService {
       `${apiUrl}/accounts/${contract}/transfers`,
     );
 
-    const donationTransactions = [];
     const rawTransactions: any[] = response.data || [];
 
     const smartContractResults = rawTransactions.filter(
-      (t) => t.type === 'SmartContractResult',
+      (t) => t.type === 'SmartContractResult' && t.receiver === address,
     );
     const transactions = rawTransactions.filter(
-      (t) => t.type === 'Transaction',
+      (t) => t.type === 'Transaction' && t.function === 'donate',
     );
 
-    const creatorTransferTransactions = smartContractResults.filter(
-      (t) => t.receiver === address,
-    );
     const donateTransactions = [];
-
-    for (const transferTransaction of creatorTransferTransactions) {
+    for (const transferTransaction of smartContractResults) {
       const found = transactions.find(
         (t) => t.txHash === transferTransaction.originalTxHash,
       );
@@ -64,13 +64,12 @@ export class StatsService {
       }
     }
 
+    const donationTransactions = [];
     for (const transaction of donateTransactions) {
       const transactionArgs = ConvertUtil.base64ToString(transaction.data);
       const args = transactionArgs.split('@');
 
-      console.log(transaction);
       const senderAddress = transaction.sender;
-      // const creatorAddress = transactionArgs[0];
       const txHash = transaction.txHash;
       const amount = transaction.value;
       const name = 2 < args.length ? ConvertUtil.hexToString(args[2]) : '';
@@ -84,7 +83,6 @@ export class StatsService {
         senderAddress: senderAddress,
       };
       donationTransactions.push(donationTransaction);
-      console.log(donationTransaction);
     }
 
     return donationTransactions;
