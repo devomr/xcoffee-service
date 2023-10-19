@@ -50,18 +50,23 @@ export class XcoffeeService {
   async getSubscriptionDuration(
     userAddress: Address,
     creatorAddress: Address,
-  ): Promise<{ status: string; remainingTime?: number }> {
+  ): Promise<{
+    status: string;
+    subscriptionId?: number;
+    remainingTime?: number;
+  }> {
     const subscriptionDeadlineTimestamp = await this.getSubscriptionDeadlineRaw(
       userAddress,
       creatorAddress,
     );
-    console.log('getSubscriptionDuration');
-    console.log(subscriptionDeadlineTimestamp);
+
     if (!subscriptionDeadlineTimestamp) {
       return { status: 'not_yet_subscribed' };
     }
 
-    const subscriptionDeadline = new Date(subscriptionDeadlineTimestamp);
+    const subscriptionDeadline = new Date(
+      subscriptionDeadlineTimestamp.deadline,
+    );
 
     let secondsRemaining =
       (subscriptionDeadline.getTime() - new Date().getTime()) / 1000;
@@ -69,13 +74,17 @@ export class XcoffeeService {
       secondsRemaining = 0;
     }
 
-    return { status: 'active_subscription', remainingTime: secondsRemaining };
+    return {
+      status: 'active_subscription',
+      subscriptionId: subscriptionDeadlineTimestamp.subscriptionId,
+      remainingTime: secondsRemaining,
+    };
   }
 
   async getSubscriptionDeadline(
     userAddress: Address,
     creatorAddress: Address,
-  ): Promise<number | null> {
+  ): Promise<{ subscriptionId: number; deadline: number } | null> {
     return await this.cacheService.getOrSet(
       CacheInfo.SubscriptionDeadline(userAddress).key,
       async () =>
@@ -87,26 +96,29 @@ export class XcoffeeService {
   async getSubscriptionDeadlineRaw(
     userAddress: Address,
     creatorAddress: Address,
-  ): Promise<number | null> {
-    const secondsOfSubscription = await this.querySubscriptionDeadline(
+  ): Promise<{ subscriptionId: number; deadline: number } | null> {
+    const subscriptionDeadline = await this.querySubscriptionDeadline(
       userAddress,
       creatorAddress,
     );
 
-    if (secondsOfSubscription === undefined) {
+    if (subscriptionDeadline === undefined) {
       return null;
     }
 
     const date = new Date();
-    date.setSeconds(date.getSeconds() + secondsOfSubscription);
+    date.setSeconds(date.getSeconds() + subscriptionDeadline.remainingSeconds);
 
-    return date.getTime();
+    return {
+      subscriptionId: subscriptionDeadline.subscriptionId,
+      deadline: date.getTime(),
+    };
   }
 
   async querySubscriptionDeadline(
     userAddress: Address,
     creatorAddress: Address,
-  ): Promise<number | undefined> {
+  ): Promise<{ subscriptionId: number; remainingSeconds: number } | undefined> {
     const interaction = this.smartContract.methods.getUserSubscriptionDeadline([
       userAddress,
       creatorAddress,
@@ -120,11 +132,18 @@ export class XcoffeeService {
     );
 
     const value = result.firstValue?.valueOf();
-    if (!value) {
+
+    const subscriptionId = value['field0'].toNumber();
+    const remainingSeconds = value['field1'].toNumber();
+
+    if (!subscriptionId || !remainingSeconds) {
       return undefined;
     }
 
-    return value.toNumber();
+    return {
+      subscriptionId: subscriptionId,
+      remainingSeconds: remainingSeconds,
+    };
   }
 
   private initSmartContract(): SmartContract {

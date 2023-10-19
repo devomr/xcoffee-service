@@ -15,4 +15,7 @@ export class DonationTransaction {
 
   @ApiProperty()
   senderAddress: string;
+
+  @ApiProperty()
+  createdAt: Date;
 }

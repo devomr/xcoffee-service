@@ -81,6 +81,7 @@ export class StatsService {
         txHash: txHash,
         amount: amount,
         senderAddress: senderAddress,
+        createdAt: new Date(transaction.timestamp * 1000),
       };
       donationTransactions.push(donationTransaction);
     }
