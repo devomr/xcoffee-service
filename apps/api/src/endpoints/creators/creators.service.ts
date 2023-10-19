@@ -44,13 +44,13 @@ export class CreatorsService {
   }
 
   /**
-   * Find the top 10 creators that have the most supporters
+   * Find the last registered creators
    * @returns List of creators
    */
-  async findTopSupportedCreators(): Promise<Creator[]> {
+  async findLastCreators(): Promise<Creator[]> {
     return await this.creatorModel
       .find()
-      .sort({ supporters: -1 })
+      .sort({ createdAt: -1 })
       .limit(10)
       .exec();
   }

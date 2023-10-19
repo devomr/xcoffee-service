@@ -60,12 +60,12 @@ export class CreatorsController {
   }
 
   /**
-   * Find the top 10 creators that have the most supporters
+   * Find the last registered creators
    * @returns List of creators
    */
-  @Get('top-supported')
-  async findTopSupported(): Promise<Creator[]> {
-    return await this.creatorsService.findTopSupportedCreators();
+  @Get('last-creators')
+  async findLastCreators(): Promise<Creator[]> {
+    return await this.creatorsService.findLastCreators();
   }
 
   /**
