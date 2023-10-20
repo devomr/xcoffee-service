@@ -1,3 +1,5 @@
+## xCoffee Microservice
+
 The microservice component is mainly used to query the smart contract (plus storing in CacheService), MultiversX API (plus storing in CacheService) and getting and saving data in the MongoDB database.
 
 For non-public endpoints, the authentication and authorization process is mandatory and is implemented via the NativeAuthGuard.
